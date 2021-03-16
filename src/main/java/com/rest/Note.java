@@ -4,10 +4,12 @@ public class Note {
 
     public int num;
     private String content;
+    public char letter;
 
-    public Note(String content) {
+    public Note(String content,char letter) {
         this.num = 0;
         this.content = content;
+        this.letter=letter;
     }
 
     void setNum(int num){
