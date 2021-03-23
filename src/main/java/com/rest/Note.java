@@ -1,14 +1,17 @@
 package com.rest;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 public class Note {
 
     public int num;
-    private String content;
-    public char letter;
+    private String word;
+    public String letter;
 
-    public Note(String content,char letter) {
+    public Note(String word,String letter) {
         this.num = 0;
-        this.content = content;
+        this.word = word;
         this.letter=letter;
     }
 
@@ -20,7 +23,9 @@ public class Note {
         return num;
     }
 
-    public String getContent() {
-        return content;
+    public String getWord() {
+        return word;
     }
+
+    void setWord(String word){this.word=word;}
 }

@@ -1,21 +1,31 @@
 package com.rest;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.rest.exceptions.ApiException;
+import com.rest.exceptions.BadRequestException;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
+@Validated
 public class Controller {
 
-    Note wordString;
     @GetMapping("/enter")
-    public Note greeting(@RequestParam(value = "word", defaultValue = "Word") String word,@RequestParam(value="letter", defaultValue = "a") char letter) {
-        wordString=new Note(word,letter);
+    public Note greeting(@RequestParam(value = "word",required = false) String word,@RequestParam(value = "letter",required = false) String letter){
+        //throw new BadRequestException("Fuck you.");
+//        try{
+//            if(letter.length()!=1)
+//                throw new BadRequestException("You are fucked");
+//        }
+        if(word==null || letter==null || word.length()==0 || letter.length()==0)
+                throw new BadRequestException("Invalid input. Word and letter fields are mandatory.");
+        if(letter.length()!=1)
+            throw new BadRequestException("Invalid input. Letter field can contain only one character.");
+        Note wordString=new Note(word,letter);
         int cntr=0;
-        for(int i=0;i<wordString.getContent().length();i++)
+        for(int i=0;i<wordString.getWord().length();i++)
         {
-            if(letter==wordString.getContent().charAt(i)){
+            if(wordString.letter.charAt(0)==wordString.getWord().charAt(i)){
                 cntr++;
             }
         }
@@ -23,22 +33,10 @@ public class Controller {
         return wordString;
     }
 
-    /*@GetMapping("/count")
-    public Note count(@RequestParam(value = "letter") char  letter){
-        int cntr=0;
-        for(int i=0;i<wordString.getContent().length();i++)
-        {
-            if(letter==wordString.getContent().charAt(i)){
-                cntr++;
-            }
-        }
-        wordString.setNum(cntr);
-        return wordString;
-    }*/
-
-    @RequestMapping("word")
-    public Note print(){
-
-        return wordString;
-    }
+//
+//    @GetMapping("word")
+//    public Note print(){
+//
+//        return wordString;
+//    }
 }
