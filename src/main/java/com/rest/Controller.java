@@ -17,20 +17,20 @@ public class Controller {
     static{
         try(FileInputStream inputStream=new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
             LogManager.getLogManager().readConfiguration(inputStream);
-            logger=Logger.getLogger(Main.class.getName());
+            logger=Logger.getLogger(Controller.class.getName());
         }
         catch (Exception ignore){
             ignore.printStackTrace();
         }
     }
     @GetMapping("/enter")
-    public Note greeting(@RequestParam(value = "word",required = false) String word,@RequestParam(value = "letter",required = false) String letter){
+    public Note input(@RequestParam(value = "word",required = false) String word,@RequestParam(value = "letter",required = false) String letter){
         if(word==null || letter==null || word.length()==0 || letter.length()==0)
                 throw new BadRequestException("Invalid input. Word and letter fields are mandatory.");
         if(letter.length()!=1)
             throw new BadRequestException("Invalid input. Letter field can contain only one character.");
         try{
-            logger.log(Level.INFO,"Start of input.");
+            logger.log(Level.INFO,"Start of input. Current parameters:\nword: "+word+"\nletter: "+letter);
             Note wordString=new Note(word,letter);
             int cntr=0;
             for(int i=0;i<wordString.getWord().length();i++)
@@ -43,9 +43,11 @@ public class Controller {
             return wordString;
         }
         catch(Exception Exception){
+            logger.log(Level.WARNING,"Caught Exception with request parameters word: "+word+", letter: "+letter);
             throw new InternalException("Internal exception occurred(Exception).");
         }
         catch (Error error){
+            logger.log(Level.WARNING,"Caught Error with request parameters word: "+word+", letter: "+letter);
             throw new InternalException("Internal exception occurred(Error).");
         }
     }
