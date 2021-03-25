@@ -15,4 +15,9 @@ public class Handler {
         ApiException apiException=new ApiException(e.getMessage(), HttpStatus.BAD_REQUEST, ZonedDateTime.now(ZoneId.of("Z")));
         return new ResponseEntity<>(apiException,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(value = {InternalException.class})
+    public ResponseEntity<Object> handleInternalException(InternalException internalException){
+        ApiException apiException=new ApiException(internalException.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR,ZonedDateTime.now(ZoneId.of("Z")));
+        return  new ResponseEntity<>(apiException,HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
