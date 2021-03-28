@@ -1,6 +1,5 @@
-package com.rest;
+package com.rest.ApplicationFiles;
 
-import com.rest.exceptions.ApiException;
 import com.rest.exceptions.BadRequestException;
 import com.rest.exceptions.*;
 import org.springframework.web.bind.annotation.*;
@@ -24,38 +23,24 @@ public class Controller {
         }
     }
     @GetMapping("/enter")
-    public Note input(@RequestParam(value = "word",required = false) String word,@RequestParam(value = "letter",required = false) String letter){
-        if(word==null || letter==null || word.length()==0 || letter.length()==0)
-                throw new BadRequestException("Invalid input. Word and letter fields are mandatory.");
-        if(letter.length()!=1)
-            throw new BadRequestException("Invalid input. Letter field can contain only one character.");
+    public Note input(@RequestParam(value = "word",required = false) String word, @RequestParam(value = "letter",required = false) String letter){
         try{
             logger.log(Level.INFO,"Start of input. Current parameters:\nword: "+word+"\nletter: "+letter);
             Note wordString=new Note(word,letter);
-            int cntr=0;
-            for(int i=0;i<wordString.getWord().length();i++)
-            {
-                if(wordString.letter.charAt(0)==wordString.getWord().charAt(i)){
-                    cntr++;
-                }
-            }
-            wordString.setNum(cntr);
+            wordString.count();
             return wordString;
         }
-        catch(Exception Exception){
+        catch (BadRequestException badRequestException){
+            throw new BadRequestException(badRequestException.getMessage());
+        }
+        catch(Exception exception){
             logger.log(Level.WARNING,"Caught Exception with request parameters word: "+word+", letter: "+letter);
-            throw new InternalException("Internal exception occurred(Exception).");
+            throw new InternalException("Internal exception occurred(Exception). Details: "+exception.getMessage());
         }
         catch (Error error){
             logger.log(Level.WARNING,"Caught Error with request parameters word: "+word+", letter: "+letter);
-            throw new InternalException("Internal exception occurred(Error).");
+            throw new InternalException("Internal exception occurred(Error). Details: "+error.getMessage());
         }
     }
 
-//
-//    @GetMapping("word")
-//    public Note print(){
-//
-//        return wordString;
-//    }
 }

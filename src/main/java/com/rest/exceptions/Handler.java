@@ -1,6 +1,5 @@
 package com.rest.exceptions;
 
-import com.rest.Main;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -34,7 +33,7 @@ public class Handler {
     @ExceptionHandler(value = {InternalException.class})
     public ResponseEntity<Object> handleInternalException(InternalException internalException){
         ApiException apiException=new ApiException(internalException.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR,ZonedDateTime.now(ZoneId.of("Z")));
-        logger.log(Level.WARNING,HttpStatus.INTERNAL_SERVER_ERROR+" exception occurred.");
+        logger.log(Level.WARNING,HttpStatus.INTERNAL_SERVER_ERROR+" exception occurred. Details: "+internalException.getMessage());
         return  new ResponseEntity<>(apiException,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
