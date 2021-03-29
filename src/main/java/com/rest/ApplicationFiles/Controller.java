@@ -2,6 +2,8 @@ package com.rest.ApplicationFiles;
 
 import com.rest.exceptions.BadRequestException;
 import com.rest.exceptions.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
@@ -23,12 +25,20 @@ public class Controller {
         }
     }
     @GetMapping("/enter")
-    public Note input(@RequestParam(value = "word",required = false) String word, @RequestParam(value = "letter",required = false) String letter){
+    public Response input(@RequestParam(value = "word",required = false) String word, @RequestParam(value = "letter",required = false) String letter){
         try{
             logger.log(Level.INFO,"Start of input. Current parameters:\nword: "+word+"\nletter: "+letter);
+
             Note wordString=new Note(word,letter);
-            wordString.count();
-            return wordString;
+            Response response;
+            if(cash.requests.get(word+letter)==null){
+                response=new Response(wordString, wordString.count());
+                cash.requests.put(word+letter, response.getQuantity());
+            }
+            else{
+                response=new Response(wordString,cash.requests.get(word+letter));
+            }
+            return response;
         }
         catch (BadRequestException badRequestException){
             throw new BadRequestException(badRequestException.getMessage());
