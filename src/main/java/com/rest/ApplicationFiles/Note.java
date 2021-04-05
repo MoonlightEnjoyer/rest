@@ -5,7 +5,6 @@ import com.rest.exceptions.BadRequestException;
 
 public class Note {
 
-    //private int num;
     private String word;
     private String letter;
 

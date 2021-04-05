@@ -19,7 +19,7 @@ public class CountTest {
         catch (Exception exception){
             throw new InternalException(exception.getMessage());
         }
-        assertEquals("The count method didn't work properly",2,result);
+        assertEquals("The count method worked properly",2,result);
     }
 
     @Test
