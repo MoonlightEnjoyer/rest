@@ -3,6 +3,8 @@ package com.rest.ApplicationFiles;
 import com.rest.exceptions.BadRequestException;
 import com.rest.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
@@ -15,12 +17,12 @@ import java.util.logging.Logger;
 public class Controller {
     static Logger logger;
     static{
-        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\artio\\IdeaProjects\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
+        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
             LogManager.getLogManager().readConfiguration(inputStream);
             logger=Logger.getLogger(Controller.class.getName());
         }
-        catch (Exception exception){
-            exception.printStackTrace();
+        catch (Exception ignore){
+            ignore.printStackTrace();
         }
     }
     @Autowired
@@ -37,7 +39,7 @@ public class Controller {
                 cash.requests.put(word+letter, response.getQuantity());
             }
             else{
-                response=new Response(wordString, cash.requests.get(word+letter));
+                response=new Response(wordString,cash.requests.get(word+letter));
             }
             return response;
         }

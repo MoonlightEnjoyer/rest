@@ -1,13 +1,27 @@
 package com.rest.UnitTests;
 
+import com.rest.ApplicationFiles.Controller;
 import com.rest.ApplicationFiles.Note;
 import com.rest.exceptions.InternalException;
 import org.junit.Test;
 
+import java.io.FileInputStream;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 import static org.junit.Assert.assertEquals;
 
 public class CountTest {
-
+    static Logger logger;
+    static{
+        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
+            LogManager.getLogManager().readConfiguration(inputStream);
+            logger=Logger.getLogger(Controller.class.getName());
+        }
+        catch (Exception ignore){
+            ignore.printStackTrace();
+        }
+    }
     @Test
     public void Count_with_correct_parameters(){
         System.out.println("\nCount with correct parameters:");
