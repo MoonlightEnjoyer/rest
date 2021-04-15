@@ -29,7 +29,6 @@ public class Controller {
     public Response input(@RequestParam(value = "word",required = false) String word, @RequestParam(value = "letter",required = false) String letter){
         try{
             logger.log(Level.INFO,"Start of input. Current parameters:\nword: "+word+"\nletter: "+letter);
-
             Note wordString=new Note(word,letter);
             Response response;
             if(cash.requests.get(word+letter)==null){
@@ -45,11 +44,11 @@ public class Controller {
             throw new BadRequestException(badRequestException.getMessage());
         }
         catch(Exception exception){
-            logger.log(Level.WARNING,"Caught Exception with request parameters word: "+word+", letter: "+letter);
+            logger.log(Level.SEVERE,"Caught Exception with request parameters word: "+word+", letter: "+letter);
             throw new InternalException("Internal exception occurred(Exception). Details: "+exception.getMessage());
         }
         catch (Error error){
-            logger.log(Level.WARNING,"Caught Error with request parameters word: "+word+", letter: "+letter);
+            logger.log(Level.SEVERE,"Caught Error with request parameters word: "+word+", letter: "+letter);
             throw new InternalException("Internal exception occurred(Error). Details: "+error.getMessage());
         }
     }

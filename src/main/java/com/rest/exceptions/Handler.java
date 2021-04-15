@@ -33,7 +33,7 @@ public class Handler {
     @ExceptionHandler(value = {InternalException.class})
     public ResponseEntity<Object> handleInternalException(InternalException internalException){
         ApiException apiException=new ApiException(internalException.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR,ZonedDateTime.now(ZoneId.of("Z")));
-        logger.log(Level.WARNING,HttpStatus.INTERNAL_SERVER_ERROR+" exception occurred. Details: "+internalException.getMessage());
+        logger.log(Level.SEVERE,HttpStatus.INTERNAL_SERVER_ERROR+" exception occurred. Details: "+internalException.getMessage());
         return  new ResponseEntity<>(apiException,HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

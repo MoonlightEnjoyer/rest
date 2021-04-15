@@ -9,7 +9,6 @@ public class Note {
     private String letter;
 
     public Note(String word,String letter) {
-        //this.num = 0;
         this.word = word;
         this.letter=letter;
     }
