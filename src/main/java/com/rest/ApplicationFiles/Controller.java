@@ -33,6 +33,7 @@ public class Controller {
             Response response;
             if(cash.requests.get(word+letter)==null){
                 response=new Response(wordString, wordString.count());
+                logger.log(Level.INFO,"New element");
                 cash.requests.put(word+letter, response.getQuantity());
             }
             else{
@@ -52,5 +53,4 @@ public class Controller {
             throw new InternalException("Internal exception occurred(Error). Details: "+error.getMessage());
         }
     }
-
 }
