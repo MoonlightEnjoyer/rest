@@ -3,7 +3,9 @@ package com.rest.ApplicationFiles;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 @Component
 public class Cash {
-    HashMap<String,Integer> requests=new HashMap<>();
+    ConcurrentHashMap<String,Integer> requests=new ConcurrentHashMap<>();
 }

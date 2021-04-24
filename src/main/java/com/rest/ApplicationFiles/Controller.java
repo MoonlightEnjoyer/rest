@@ -27,7 +27,7 @@ public class Controller {
     }
     @Autowired
     Cash cash;
-    volatile RequestCounter requestCounter=new RequestCounter();
+    RequestCounter requestCounter=new RequestCounter();
     @GetMapping("/enter")
     @Async("threadPoolTaskExecutor")
     public Response input(@RequestParam(value = "word",required = false) String word, @RequestParam(value = "letter",required = false) String letter){

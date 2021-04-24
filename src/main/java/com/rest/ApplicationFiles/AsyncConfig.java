@@ -13,8 +13,14 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 public class AsyncConfig {
     @Bean(name="threadPoolTaskExecutor")
-    public Executor threadPoolExecutor()
+    public Executor threadPoolTaskExecutor()
     {
-        return new ThreadPoolExecutor();
+       ThreadPoolTaskExecutor executor=new ThreadPoolTaskExecutor();
+       executor.setCorePoolSize(4);
+       executor.setMaxPoolSize(4);
+       //executor.setQueueCapacity(100);
+       executor.setThreadNamePrefix("AsynchThread-");
+       executor.initialize();
+        return executor;
     }
 }
