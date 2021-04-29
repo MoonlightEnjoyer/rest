@@ -1,16 +1,24 @@
 package com.rest.ApplicationFiles;
 
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.rest.exceptions.BadRequestException;
+import org.json.JSONObject;
 
 public class Note {
 
+    @JsonProperty("Word")
     private String word;
+    @JsonProperty("Letter")
     private String letter;
 
     public Note(String word,String letter) {
         this.word = word;
         this.letter=letter;
+    }
+
+    public Note() {
     }
 
     public int count(){
@@ -36,5 +44,13 @@ public class Note {
 
     public String getLetter() {
         return letter;
+    }
+
+    public void setWord(String word) {
+        this.word = word;
+    }
+
+    public void setLetter(String letter) {
+        this.letter = letter;
     }
 }

@@ -17,4 +17,21 @@ public class Response {
         this.note = note;
         this.quantity = quantity;
     }
+
+    public Response(){
+        this.quantity=0;
+    }
+
+    public Response(Note note){
+        this.note=note;
+        this.quantity=0;
+    }
+
+    public void setNote(Note note) {
+        this.note = note;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }
