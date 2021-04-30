@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -32,8 +33,8 @@ public class Controller {
     static Logger logger;
 
     static {
-        //try(FileInputStream inputStream=new FileInputStream("C:\\Users\\artio\\IdeaProjects\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
-        try (FileInputStream inputStream = new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")) {
+        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\artio\\IdeaProjects\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
+        //try (FileInputStream inputStream = new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")) {
             LogManager.getLogManager().readConfiguration(inputStream);
             logger = Logger.getLogger(Controller.class.getName());
         } catch (Exception exception) {
@@ -85,15 +86,12 @@ public class Controller {
 //           // logger.log(Level.SEVERE,"Caught Exception with request parameters word: "+word+", letter: "+letter);
 //            throw new InternalException("Internal exception occurred(Exception). Details: "+exception.getMessage());
 //        }
-//        catch (Error error){
-//           // logger.log(Level.SEVERE,"Caught Error with request parameters word: "+word+", letter: "+letter);
-//            throw new InternalException("Internal exception occurred(Error). Details: "+error.getMessage());
-//        }
 //    }
 
     @PostMapping("/enter")
     @Async("threadPoolTaskExecutor")
-    public CompletableFuture<ArrayList<Response>> inputByPost(@RequestParam(value = "note", required = false) List<String> requestParams) {
+    public CompletableFuture<ArrayList<Response>> inputByPost(
+            @RequestParam(value = "note", required = false) List<String> requestParams) {
         try{
             ArrayList<Response> responseList=new ArrayList<>();
             ObjectMapper objectMapper=new ObjectMapper();
@@ -122,17 +120,14 @@ public class Controller {
                     } catch (Exception exception) {
                         logger.log(Level.SEVERE, "Caught Exception with following request parameters: " + requestParams);
                         throw new InternalException("Internal exception occurred(Exception). Details: " + exception.getMessage());
-                    } catch (Error error) {
-                        logger.log(Level.SEVERE, "Caught Error with following request parameters: " + requestParams);
-                        throw new InternalException("Internal exception occurred(Error). Details: " + error.getMessage());
                     }
                     cash.requests.put(element.getNote().getWord() + element.getNote().getLetter(), element.getQuantity());
+                    logger.log(Level.INFO, "Added new element.");
                 }
                 else{
                     element.setQuantity(cash.requests.get(element.getNote().getWord()+element.getNote().getLetter()));
                 }
             });
-            //requestCounter.counter.incrementAndGet();
             logger.log(Level.INFO,"Quantity of requests: "+requestCounter.counter.incrementAndGet());
             return CompletableFuture.completedFuture(responseList);
         }
@@ -143,10 +138,12 @@ public class Controller {
             logger.log(Level.SEVERE,"Caught Exception with following request parameters: "+requestParams);
             throw new InternalException("Internal exception occurred(Exception). Details: "+exception.getMessage());
         }
-        catch (Error error){
-            logger.log(Level.SEVERE,"Caught Error with following request parameters: "+requestParams);
-            throw new InternalException("Internal exception occurred(Error). Details: "+error.getMessage());
-        }
+    }
+
+    @GetMapping("/counter")
+    public AtomicLong returnCounter()
+    {
+        return requestCounter.counter;
     }
 
 }

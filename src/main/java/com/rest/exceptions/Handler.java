@@ -16,8 +16,8 @@ import java.util.logging.Logger;
 public class Handler {
     static Logger logger;
     static{
-        //try(FileInputStream inputStream=new FileInputStream("C:\\Users\\artio\\IdeaProjects\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
-        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
+        try(FileInputStream inputStream=new FileInputStream("C:\\Users\\artio\\IdeaProjects\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
+        //try(FileInputStream inputStream=new FileInputStream("C:\\Users\\Artem\\Desktop\\rest\\src\\main\\java\\com\\rest\\logger\\logger.properties")){
             LogManager.getLogManager().readConfiguration(inputStream);
             logger=Logger.getLogger(Handler.class.getName());
         }
