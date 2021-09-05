@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.exceptions.BadRequestException;
 import com.rest.exceptions.*;
 import netscape.javascript.JSObject;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +19,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.DataInput;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -46,6 +52,9 @@ public class Controller {
     Cash cash;
     @Autowired
     RequestCounter requestCounter;
+    FilterResult min=new FilterResult("Element with the least quantity of overlaps.");
+    FilterResult max=new FilterResult("Element with the greatest quantity of overlaps.");
+    DBOperations dbOperations=new DBOperations();
 
 //    @GetMapping("/enter")
 //    @Async("threadPoolTaskExecutor")
@@ -88,6 +97,7 @@ public class Controller {
 //        }
 //    }
 
+
     @PostMapping("/enter")
     @Async("threadPoolTaskExecutor")
     public CompletableFuture<ArrayList<Response>> inputByPost(
@@ -95,10 +105,10 @@ public class Controller {
         try{
             ArrayList<Response> responseList=new ArrayList<>();
             ObjectMapper objectMapper=new ObjectMapper();
-            requestParams.stream().forEach((element)->{
+            requestParams.forEach((element)->{
                 try{
                     Response response=new Response(objectMapper.readValue(element,Note.class));
-                    if(response.getNote()==null || response.getNote().getLetter()==null || response.getNote().getWord()==null)
+                    if(response.getLetter()==null || response.getWord()==null)
                         throw new BadRequestException("Invalid input. Word and letter fields are mandatory.");
                     else
                         responseList.add(response);
@@ -111,23 +121,28 @@ public class Controller {
                     throw new BadRequestException(badRequestException.getMessage());
                 }
             });
-            responseList.stream().forEach((element)->{
-                if(cash.requests.get(element.getNote().getWord()+element.getNote().getLetter())==null) {
+            responseList.forEach((element)->{
+                if(cash.requests.get(element.getWord()+element.getLetter())==null) {
                     try {
-                        element.setQuantity(element.getNote().count());
+                        element.setQuantity(element.count());
                     } catch (BadRequestException badRequestException) {
                         throw new BadRequestException(badRequestException.getMessage());
                     } catch (Exception exception) {
                         logger.log(Level.SEVERE, "Caught Exception with following request parameters: " + requestParams);
                         throw new InternalException("Internal exception occurred(Exception). Details: " + exception.getMessage());
                     }
-                    cash.requests.put(element.getNote().getWord() + element.getNote().getLetter(), element.getQuantity());
+                    cash.requests.put(element.getWord() + element.getLetter(), element.getQuantity());
+                    dbOperations.Insert(element);
                     logger.log(Level.INFO, "Added new element.");
                 }
                 else{
-                    element.setQuantity(cash.requests.get(element.getNote().getWord()+element.getNote().getLetter()));
+                    element.setQuantity(cash.requests.get(element.getWord()+element.getLetter()));
                 }
             });
+            max.setResponse(responseList.stream().max(Comparator.comparing(Response::getQuantity)).get());
+            min.setResponse(responseList.stream().min(Comparator.comparing(Response::getQuantity)).get());
+            responseList.add(min);
+            responseList.add(max);
             logger.log(Level.INFO,"Quantity of requests: "+requestCounter.counter.incrementAndGet());
             return CompletableFuture.completedFuture(responseList);
         }
@@ -141,9 +156,19 @@ public class Controller {
     }
 
     @GetMapping("/counter")
-    public AtomicLong returnCounter()
+    public AtomicLong GetCounter()
     {
         return requestCounter.counter;
+    }
+
+    @GetMapping("/max")
+    public FilterResult GetMax(){
+        return max;
+    }
+
+    @GetMapping("/min")
+    public FilterResult GetMin(){
+        return min;
     }
 
 }
